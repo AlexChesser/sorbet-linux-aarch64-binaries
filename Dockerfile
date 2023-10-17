@@ -9,15 +9,16 @@ WORKDIR ${SORBET_RELEASE}
 # When building on  an apple silicon mac we need to strip the sandybridge (intel) architecture
 RUN bash -c "sed '/--copt=-march=sandybridge/d' .bazelrc > .bazelrc_2" && \
     mv .bazelrc_2 .bazelrc
-RUN mkdir /gems
 RUN ./.buildkite/build-static-release.sh
-RUN cp -r _out_/gems /
+RUN cp -r _out_ /
 RUN ./.buildkite/build-sorbet-static-and-runtime.sh
-RUN cp -r _out_/gems /
+RUN cp -r _out_ /
+RUN ./.buildkite/build-sorbet-runtime.sh
+RUN cp -r _out_ /
 WORKDIR /gems
 
 # this strips out everything but the binaries from the build container 
 # so consumers don't need to download an 8+GB image :) 
 FROM alpine
-COPY --from=BUILD /gems /gems
+COPY --from=BUILD /_out_ /gems
 WORKDIR /gems
