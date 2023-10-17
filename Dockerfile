@@ -1,7 +1,8 @@
 # this is a build of the https://github.com/sorbet/sorbet-build-image.git repo.
 FROM alexchesser/sorbet-build-image as BUILD
+ARG SORBET_RELEASE_ARG
 
-ENV SORBET_RELEASE=0.5.11073.20231013130737-0f0f4b938
+ENV SORBET_RELEASE=${SORBET_RELEASE_ARG}
 RUN git clone --depth 1 https://github.com/sorbet/sorbet.git --tags ${SORBET_RELEASE} --single-branch
 WORKDIR ${SORBET_RELEASE}
 
