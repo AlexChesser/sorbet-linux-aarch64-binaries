@@ -9,8 +9,11 @@ WORKDIR ${SORBET_RELEASE}
 # When building on  an apple silicon mac we need to strip the sandybridge (intel) architecture
 RUN bash -c "sed '/--copt=-march=sandybridge/d' .bazelrc > .bazelrc_2" && \
     mv .bazelrc_2 .bazelrc
+RUN mkdir /gems
 RUN ./.buildkite/build-static-release.sh
-RUN mv _out_/gems /gems
+RUN cp -r _out_/gems /
+RUN ./.buildkite/build-sorbet-static-and-runtime.sh
+RUN cp -r _out_/gems /
 WORKDIR /gems
 
 # this strips out everything but the binaries from the build container 
